@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "A clothing item in the store.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Product name" },
+        "price": { "type": "number", "description": "Product price" },
+        "description": { "type": "string", "description": "Detailed description" },
+        "category": { "type": "string", "enum": ["Outerwear", "Tops", "Bottoms", "Dresses"], "description": "Product category" },
+        "images": { "type": "array", "items": { "type": "string" }, "description": "List of image URLs" },
+        "sizes": { "type": "array", "items": { "type": "string" }, "description": "Available sizes" },
+        "details": { "type": "object", "description": "Fabric and care details" }
+      },
+      "required": ["name", "price", "category", "images"]
+    },
+    "User": {
+      "title": "User",
+      "description": "Customer profile information.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "customer"] }
+      },
+      "required": ["email"]
+    },
+    "CartItem": {
+      "title": "CartItem",
+      "description": "An item in a user's cart.",
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string" },
+        "quantity": { "type": "integer" },
+        "size": { "type": "string" }
+      },
+      "required": ["productId", "quantity", "size"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Store products"
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Store user profiles"
+    },
+    "/users/{userId}/cart/{cartItemId}": {
+      "schema": "CartItem",
+      "description": "Store user cart items"
+    }
+  }
+}

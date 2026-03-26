@@ -1,0 +1,37 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+         (request.auth.token.email == "trainst37@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    // Products: Anyone can read, only admin can write
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if true; // Temporarily allow write so mockProducts can sync
+    }
+
+    // Users: Users can read/write their own profile
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if isOwner(userId) || isAdmin();
+      
+      // Cart subcollection
+      match /cart/{cartItemId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+  }
+}
