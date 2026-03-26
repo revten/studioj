@@ -21,15 +21,14 @@ jobs:
         run: |
           npm install
           npm run build
-        env:
-          # 만약 Gemini API Key가 필요하다면 Secrets에 등록 후 아래 주석 해제
-          # VITE_GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        # env: 가 있던 자리를 비워두거나 삭제했습니다. 
+        # 나중에 API Key가 필요하면 아래에 다시 추가하면 됩니다.
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './dist' # 핵심: 소스 코드가 아니라 'dist' 폴더를 배포합니다!
+          path: './dist'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
